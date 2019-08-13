@@ -41,7 +41,7 @@ class Usuario {
     public function loadById($id) {
         $sql = new Sql("mysql:host=localhost;dbname=dbphp7", "root", "");
 
-        $results = $sql->select("select * from tb_usuarios where idusuario = :id", array(
+        $results = $sql->select("select * from tb_usuarios where idusuario = :id;", array(
             ":id" => $id
         ));
 
@@ -53,6 +53,12 @@ class Usuario {
             $this->setDessenha($row["dessenha"]);
             $this->setDtcadastro(new DateTime($row["dtcadastro"]));
         }
+    }
+
+    public static function getList() {
+        $sql = new Sql("mysql:host=localhost;dbname=dbphp7", "root", "");
+
+        return $sql->select("select * from tb_usuarios order by idusuario;");
     }
 
     public function __toString() {
