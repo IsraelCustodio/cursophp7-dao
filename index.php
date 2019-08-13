@@ -2,10 +2,14 @@
 
 require_once("config.php");
 
-$sql = new Sql("mysql:host=localhost;dbname=dbphp7", "root", "");
+// $sql = new Sql("mysql:host=localhost;dbname=dbphp7", "root", "");
 
-$usuarios = $sql->select("select * from tb_usuarios");
+// $usuarios = $sql->select("select * from tb_usuarios");
 
-echo json_encode($usuarios);
+$usuarios = new Usuario();
+
+$usuarios->loadById(4);
+
+// echo json_encode($usuarios);
 
  ?>
