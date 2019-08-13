@@ -61,6 +61,34 @@ class Usuario {
         return $sql->select("select * from tb_usuarios order by idusuario;");
     }
 
+    public static function search($login) {
+        $sql = new Sql("mysql:host=localhost;dbname=dbphp7", "root", "");
+
+        return $sql->select("select * from tb_usuarios where deslogin like :search order by deslogin;", array(
+            ":search" => "%" . $login . "%"
+        ));
+    }
+
+    public function login($login, $senha) {
+        $sql = new Sql("mysql:host=localhost;dbname=dbphp7", "root", "");
+
+        $results = $sql->select("select * from tb_usuarios where deslogin = :login and dessenha = :senha;", array(
+            ":login" => $login,
+            ":senha" => $senha
+        ));
+
+        if (count($results) > 0) {
+            $row = $results[0];
+
+            $this->setIdusuario($row["idusuario"]);
+            $this->setDeslogin($row["deslogin"]);
+            $this->setDessenha($row["dessenha"]);
+            $this->setDtcadastro(new DateTime($row["dtcadastro"]));
+        } else {
+            throw new Exception("Login e/ou senha inválidos!");
+        }
+    }
+
     public function __toString() {
         return json_encode(array(
             "idusuario" => $this->getIdusuario(),
