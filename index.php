@@ -6,9 +6,11 @@ require_once("config.php");
 
 // $usuarios = $sql->select("select * from tb_usuarios");
 
-$usuarios = new Usuario();
+$usuario = new Usuario();
 
-$usuarios->loadById(4);
+$usuario->loadById($_GET["id"]);
+
+echo $usuario;
 
 // echo json_encode($usuarios);
 
