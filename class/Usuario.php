@@ -46,12 +46,7 @@ class Usuario {
         ));
 
         if (count($results) > 0) {
-            $row = $results[0];
-
-            $this->setIdusuario($row["idusuario"]);
-            $this->setDeslogin($row["deslogin"]);
-            $this->setDessenha($row["dessenha"]);
-            $this->setDtcadastro(new DateTime($row["dtcadastro"]));
+            $this->setData($results[0]);
         }
     }
 
@@ -78,15 +73,56 @@ class Usuario {
         ));
 
         if (count($results) > 0) {
-            $row = $results[0];
-
-            $this->setIdusuario($row["idusuario"]);
-            $this->setDeslogin($row["deslogin"]);
-            $this->setDessenha($row["dessenha"]);
-            $this->setDtcadastro(new DateTime($row["dtcadastro"]));
+            $this->setData($results[0]);
         } else {
             throw new Exception("Login e/ou senha inválidos!");
         }
+    }
+
+    public function setData($data) {
+        $this->setIdusuario($data["idusuario"]);
+        $this->setDeslogin($data["deslogin"]);
+        $this->setDessenha($data["dessenha"]);
+        $this->setDtcadastro(new DateTime($data["dtcadastro"]));
+    }
+
+    public function insert() {
+        $sql = new Sql("mysql:host=localhost;dbname=dbphp7", "root", "");
+
+        $results = $sql->select("CALL sp_usuarios_insert(:login, :senha)", array(
+            ":login" => $this->getDeslogin(),
+            ":senha" => $this->getDessenha()
+        ));
+
+        if (count($results) > 0) {
+            $this->setData($results[0]);
+        }
+    }
+
+    public function update($login, $senha) {
+        $this->setDeslogin($login);
+        $this->setDessenha($senha);
+
+        $sql = new Sql("mysql:host=localhost;dbname=dbphp7", "root", "");
+
+        $sql->query("update tb_usuarios set deslogin = :login, dessenha = :senha where idusuario = :id;", array(
+            ":login" => $this->getDeslogin(),
+            ":senha" => $this->getDessenha(),
+            ":id" => $this->getIdusuario()
+        ));
+    }
+
+    public function delete() {
+        $sql = new Sql("mysql:host=localhost;dbname=dbphp7", "root", "");
+
+        $sql->query("delete from tb_usuarios where idusuario = :id;", array(
+            ":id" => $this->getIdusuario()
+        ));
+    }
+
+    public function __construct($login = "", $senha = "") {
+        $this->setDeslogin($login);
+        $this->setDessenha($senha);
     }
 
     public function __toString() {
